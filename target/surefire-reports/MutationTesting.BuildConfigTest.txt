@@ -1,0 +1,9 @@
+-------------------------------------------------------------------------------
+Test set: MutationTesting.BuildConfigTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.406 sec <<< FAILURE! - in MutationTesting.BuildConfigTest
+testCreateAntBuildConfig(MutationTesting.BuildConfigTest)  Time elapsed: 0.389 sec  <<< FAILURE!
+java.lang.AssertionError: Not yet implemented
+	at org.junit.Assert.fail(Assert.java:88)
+	at MutationTesting.BuildConfigTest.testCreateAntBuildConfig(BuildConfigTest.java:25)
+

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Timing.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">Timing.java</span></div><h1>Timing.java</h1><pre class="source lang-java linenums">package MutationTesting;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+/**
+ * provides functionality to measure compile time
+ * 
+ * @author njenkin
+ */
+public class Timing{
+	
+	long startTime;
+	long endTime;
+	long totalTime;
+	long goldTime;
+	long currentTime;
+	
+	/**
+	 * Empty constructor 
+	 */
+<span class="fc" id="L22">	Timing(){</span>
+<span class="fc" id="L23">		startTime = 0;</span>
+<span class="fc" id="L24">		endTime = 0;</span>
+<span class="fc" id="L25">		totalTime = 0;</span>
+<span class="fc" id="L26">		goldTime = 0;</span>
+<span class="fc" id="L27">		currentTime = 0;</span>
+<span class="fc" id="L28">	}</span>
+	
+	/**
+	 * Constructor that takes the gold version run time
+	 * 
+	 * @param gold
+	 */
+<span class="fc" id="L35">	Timing(long gold){</span>
+<span class="fc" id="L36">		goldTime = gold;</span>
+<span class="fc" id="L37">	}</span>
+	
+	/**
+	 * Used to start the system timer
+	 */
+	public void setStartTime(){
+<span class="fc" id="L43">		startTime = System.nanoTime();</span>
+<span class="fc" id="L44">	}</span>
+
+	/**
+	 * Used to stop the system time. Sets the total run time once activated.
+	 */
+	public void setEndTime(){
+<span class="fc" id="L50">		endTime = System.nanoTime();</span>
+<span class="fc" id="L51">		totalTime = endTime - startTime;</span>
+<span class="fc" id="L52">	}</span>
+	
+	/**
+	 * Returns the total run time 
+	 * 
+	 * @return totalTime
+	 */
+	public long getTotalRunTime(){
+<span class="fc" id="L60">		return (endTime - startTime);</span>
+	}
+	
+	/**
+	 * Used to get the current run time
+	 * 
+	 * @return currentTime - startTime
+	 */
+	public long getCurrentRunTime(){
+<span class="fc" id="L69">		currentTime = System.nanoTime();</span>
+<span class="fc" id="L70">		return (currentTime - startTime);</span>
+	}
+	
+	/**
+	 * Determines if the run time is less than or equal
+	 * to twice of the gold version run time
+	 * 
+	 * @return totalTime &lt;= 2*goldTime
+	 */
+	public boolean validRunTime(){
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">		return (getTotalRunTime() &lt;= (2*goldTime));</span>
+	}
+		
+	/**
+	 * Resets the gold value or sets it if the empty
+	 * constructor was used
+	 * 
+	 * @param gold
+	 */
+	public void setGoldTime(long gold){
+<span class="fc" id="L90">		goldTime = gold;</span>
+<span class="fc" id="L91">	}</span>
+	
+	/**
+	 * Used to get the gold time of the timing class
+	 * 
+	 * @return goldTime
+	 */
+	public long getGoldTime(){
+<span class="fc" id="L99">		return goldTime;</span>
+	}
+	
+	
+	/**
+	 * *Records gold version run while while
+	 * monitoring the run time of the gold program 
+	 * ensuring that it does not exceed two minutes 
+	 */
+	public void monitorGoldVersionRunTime(){
+<span class="nc" id="L109">		long gold = getGoldTime();</span>
+		
+<span class="nc" id="L111">		Timer goldTimer = new Timer();</span>
+		TimerTask goldTask;
+	
+		
+<span class="nc" id="L115">	}</span>
+	
+	/**
+	 * Ensures that the twice the gold version time is
+	 * not exceeded while running a mutant version of the program
+	 */
+	public void monitorMutationRunTime(){
+		
+		
+		
+<span class="nc" id="L125">	}</span>
+	
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MutationReport.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">MutationReport.java</span></div><h1>MutationReport.java</h1><pre class="source lang-java linenums">package MutationTesting;
+
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+//import java.nio.file.Path;
+
+import org.apache.log4j.Logger;
+
+/**
+ * Mutation Report Model Object
+ * 
+ * &lt;p&gt;Contains methods for maintaining information required to generate reports.
+ * 
+ */
+public class MutationReport {
+	
+<span class="fc" id="L20">	static final Logger logger = Logger.getLogger(MutationReport.class);</span>
+
+	private int totalNumberOfMutants;
+	private int numberOfKilledMutants;
+	
+	private int numberOfLegalTests;
+	private int totalNumberOfTests;
+	
+<span class="fc" id="L28">	public MutationReport(){</span>
+<span class="fc" id="L29">		totalNumberOfMutants = 0;</span>
+<span class="fc" id="L30">		numberOfKilledMutants = 0;</span>
+<span class="fc" id="L31">		numberOfLegalTests = 0;</span>
+<span class="fc" id="L32">		totalNumberOfTests = 0;</span>
+<span class="fc" id="L33">	}</span>
+
+	// This section contains functions accessing and modifying totalNumberOfMutants
+	
+	/**
+	 * Accessor function for totalNumberOfMutants
+	 */
+	public int getTotalNumberOfMutants() {
+<span class="fc" id="L41">		return totalNumberOfMutants;</span>
+	}
+	
+	/**
+	 * Mutator function for totalNumberOfMutants allowing an integer
+	 * as a parameter for specifying a value.
+	 * @param totalNumberOfMutants
+	 */
+	public void setTotalNumberOfMutants(int totalNumberOfMutants) {
+<span class="fc" id="L50">		this.totalNumberOfMutants = totalNumberOfMutants;</span>
+<span class="fc" id="L51">	}</span>
+	
+	/**
+	 * Mutator function for totalNumberOfMutants
+	 * This function increments totalNumberOfMutants
+	 */
+	public void addMutant()	{
+<span class="fc" id="L58">		this.totalNumberOfMutants++;</span>
+<span class="fc" id="L59">	}</span>
+	
+	/**
+	 * Mutator function for totalNumberOfMutants
+	 * This function increments totalNumberOfMutants by the value 
+	 * specified in the parameter numOfMutantsToAdd
+	 * @param numOfMutantsToAdd
+	 */
+	public void addMutants(int numOfMutantsToAdd) {
+<span class="fc" id="L68">		this.totalNumberOfMutants += numOfMutantsToAdd;</span>
+<span class="fc" id="L69">	}</span>
+	
+	// This section contains functions accessing and modifying numberOfKilledMutants
+	
+	/**
+	 * Accessor function for numberOfKilledMutants
+	 * @return
+	 */
+	public int getNumberOfKilledMutants() {
+<span class="fc" id="L78">		return numberOfKilledMutants;</span>
+	}
+	
+	/**
+	 * Mutator function for totalNumberOfMutants allowing an integer
+	 * as a parameter for specifying a value.
+	 * @param numberOfKilledMutants
+	 */
+	public void setNumberOfKilledMutants(int numberOfKilledMutants) {
+<span class="fc" id="L87">		this.numberOfKilledMutants = numberOfKilledMutants;</span>
+<span class="fc" id="L88">	}</span>
+	
+	/**
+	 * Mutator function for numberOfKilledMutants
+	 * This function increments numberOfKilledMutants
+	 */
+	public void killMutant() {
+<span class="fc" id="L95">		this.numberOfKilledMutants++;</span>
+<span class="fc" id="L96">	}</span>
+	
+	/**
+	 * Mutator function for numberOfKilledMutants
+	 * This function increments numberOfKilledMutants by the value
+	 * specified in the parameter numberOfMutantsKilled
+	 * @param numberOfMutantsToKill
+	 */
+	public void killNumberOfMutants(int numberOfMutantsToKill) {
+<span class="fc" id="L105">		this.numberOfKilledMutants += numberOfMutantsToKill;</span>
+<span class="fc" id="L106">	}</span>
+	
+	// This section contains functions accessing and modifying numberOfLegalTests
+	
+	/**
+	 * Accessor function for numberOfLegalTests
+	 */
+	public int getNumberOfLegalTests(){
+<span class="fc" id="L114">		return numberOfLegalTests;</span>
+	}
+	
+	/**
+	 * Mutator function for numberOfLegalTests
+	 * This function provides increment functionality for tracking the number of legal tests.
+	 * This function will also increment the value stored in totalNumberOfTests
+	 */
+	public void addLegalTest(){
+<span class="fc" id="L123">		numberOfLegalTests++;</span>
+<span class="fc" id="L124">		addTest();</span>
+<span class="fc" id="L125">	}</span>
+	
+	/**
+	 * Mutator function for numberOfLegalTests
+	 * This function provides ability for incrementing number of legal tests
+	 * by a specified integer parameter. This function will also increase the value
+	 * stored in totalNumberOfTests
+	 */
+	public void addNumberOfLegalTests(int numberOfTestsToAdd){
+<span class="fc" id="L134">		numberOfLegalTests += numberOfTestsToAdd;</span>
+<span class="fc" id="L135">		addNumberOfTests(numberOfTestsToAdd);</span>
+<span class="fc" id="L136">	}</span>
+	
+	/**
+	 * Mutator function for numberOfLegalTests
+	 * This function stores the value of the parameter in the numberOfLegalTests variable
+	 * @param numberOfTests
+	 */
+	public void setNumberOfLegalTests(int numberOfTests) {
+<span class="fc" id="L144">		numberOfLegalTests = numberOfTests;</span>
+<span class="fc" id="L145">	}</span>
+	
+	/**
+	 * Mutator function for numberOfLegalTests
+	 * This function provides ability to decrement number of legal tests
+	 */
+	public void removeLegalTest(){
+<span class="fc" id="L152">		numberOfLegalTests--;</span>
+<span class="fc" id="L153">	}</span>
+	
+	// This section contains functions accessing and modifying totalNumberOfTests
+	
+	/**
+	 * Accessor function for totalNumberOfTests
+	 * @return
+	 */
+	public int getTotalNumberOfTests() {
+<span class="fc" id="L162">		return totalNumberOfTests;</span>
+	}
+	
+	/**
+	 * Mutator function for totalNumberOfTests
+	 * This function increments the value stored in totalNumberOfTests
+	 */
+	public void addTest() {
+<span class="fc" id="L170">		totalNumberOfTests++;</span>
+<span class="fc" id="L171">	}</span>
+	
+	/**
+	 * Mutator function for totalNumberOfTests
+	 * This function increments the value stored in totalNumberOfTests
+	 * by the integer amount passed in as a parameter.
+	 * 
+	 * @param numberOfTestsToAdd
+	 */
+	public void addNumberOfTests(int numberOfTestsToAdd){
+<span class="fc" id="L181">		totalNumberOfTests += numberOfTestsToAdd;</span>
+<span class="fc" id="L182">	}</span>
+	
+	/**
+	 * Mutator function for totalNumberOfTests
+	 * This function will set the value of totalNumberOfTests equal to
+	 * the integer amount passed in as a parameter.
+	 * @param numberOfTests
+	 */
+	public void setTotalNumberOfTests(int numberOfTests){
+<span class="fc" id="L191">		totalNumberOfTests =  numberOfTests;</span>
+<span class="fc" id="L192">	}</span>
+	
+	// This section contains additional functions for generating reports
+	
+	/**
+	 * This function calculates and returns the number of mutations
+	 * that remain alive.
+	 * 
+	 * @return
+	 */
+	public int getNumberOfMutantsAlive(){
+<span class="fc" id="L203">		return (totalNumberOfMutants - numberOfKilledMutants);</span>
+	}
+	
+	/**
+	 * This function calculates a basic &quot;quality score&quot; by dividing the number
+	 * of mutants killed by a given test suite by the total number of mutants
+	 * @return
+	 */
+	public double qualityScore(){
+<span class="fc" id="L212">		return (numberOfKilledMutants/totalNumberOfMutants);</span>
+	}
+	/**
+	 * This function builds a Summary Report and returns it as a string.
+	 * @return
+	 */
+	public String getSummaryReport() {
+<span class="fc" id="L219">		StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L220">		sb.append(&quot;Summary Report:\n&quot;);</span>
+<span class="fc" id="L221">		sb.append(&quot;Total number of mutants:             &quot; + totalNumberOfMutants + &quot;\n&quot;);</span>
+<span class="fc" id="L222">		sb.append(&quot;Number of mutants killed:            &quot; + numberOfKilledMutants + &quot;\n&quot;);</span>
+<span class="fc" id="L223">		sb.append(&quot;Number of mutations remaining alive: &quot; + getNumberOfMutantsAlive() + &quot;\n&quot;);</span>
+<span class="fc" id="L224">		sb.append(&quot;Number of legal tests:               &quot; + numberOfLegalTests + &quot;\n&quot;);</span>
+<span class="fc" id="L225">		sb.append(&quot;Quality score:                       &quot; + qualityScore() + &quot;\n&quot;);</span>
+<span class="fc" id="L226">		return sb.toString();</span>
+	}
+	
+	/**
+	 * This function prints the Summary Report to the console
+	 */
+	public void printToSummaryReportConsole() {
+<span class="nc" id="L233">		System.out.print(getSummaryReport());</span>
+<span class="nc" id="L234">	}</span>
+	
+	/**
+	 * This function prints the Summary Report to a .txt file
+	 */
+	public void printSummaryReportToFile()
+	{
+<span class="nc" id="L241">		Writer writer = null;</span>
+
+		try {
+<span class="nc" id="L244">		    writer = new BufferedWriter(new OutputStreamWriter(</span>
+		          new FileOutputStream(&quot;MutationTestingReport.txt&quot;), &quot;utf-8&quot;));
+<span class="nc" id="L246">		    writer.write(getSummaryReport());</span>
+<span class="nc" id="L247">		} catch (IOException ex) {</span>
+<span class="nc" id="L248">			logger.error(&quot;The following IO error occurred while attempting to print the report to a file:&quot;);</span>
+<span class="nc" id="L249">			logger.error(ex.getMessage());</span>
+		} finally {
+<span class="nc" id="L251">			try {writer.close();} catch (Exception ex) {</span>
+<span class="nc" id="L252">				logger.error(&quot;The following error occurred while attempting to clean up after printing to a file:\n&quot;);</span>
+<span class="nc" id="L253">				logger.error(ex.getMessage());</span>
+<span class="nc" id="L254">		   }</span>
+<span class="nc" id="L255">		}</span>
+<span class="nc" id="L256">	}</span>
+	
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

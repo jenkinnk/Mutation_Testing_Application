@@ -1,0 +1,32 @@
+-------------------------------------------------------------------------------
+Test set: MutationTesting.MutationReportTest
+-------------------------------------------------------------------------------
+Tests run: 23, Failures: 4, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec <<< FAILURE! - in MutationTesting.MutationReportTest
+testGetSummaryReport(MutationTesting.MutationReportTest)  Time elapsed: 0 sec  <<< FAILURE!
+org.junit.ComparisonFailure: expected:<...s:               23
+[]> but was:<...s:               23
+[Quality score:                       0.0
+]>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at MutationTesting.MutationReportTest.testGetSummaryReport(MutationReportTest.java:172)
+
+testPrintSummaryReportToFile(MutationTesting.MutationReportTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Not yet implemented
+	at org.junit.Assert.fail(Assert.java:88)
+	at MutationTesting.MutationReportTest.testPrintSummaryReportToFile(MutationReportTest.java:182)
+
+testPrintToSummaryReportConsole(MutationTesting.MutationReportTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Not yet implemented
+	at org.junit.Assert.fail(Assert.java:88)
+	at MutationTesting.MutationReportTest.testPrintToSummaryReportConsole(MutationReportTest.java:177)
+
+testGetNumberOfLegalTests(MutationTesting.MutationReportTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: expected:<0> but was:<5>
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotEquals(Assert.java:743)
+	at org.junit.Assert.assertEquals(Assert.java:118)
+	at org.junit.Assert.assertEquals(Assert.java:555)
+	at org.junit.Assert.assertEquals(Assert.java:542)
+	at MutationTesting.MutationReportTest.testGetNumberOfLegalTests(MutationReportTest.java:82)
+

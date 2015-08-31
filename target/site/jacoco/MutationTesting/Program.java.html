@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Program.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">Program.java</span></div><h1>Program.java</h1><pre class="source lang-java linenums">package MutationTesting;
+
+import java.util.List;
+import java.util.ArrayList;
+
+/**
+ * Program model object.
+ * We use this to store the gold version of our program.
+ * &lt;p&gt;A program consists primarily of source files and various supporting
+ * documents, such as build configuration and comparison files.
+ * &lt;p&gt;Each mutant version is created by duplicating and modifying the gold
+ * version Program instance.
+ * @author jbreeden
+ *
+ */
+public class Program {
+	private List&lt;SourceFile&gt; sourceFiles;
+	
+	/**
+	 * Program Constructor
+	 * This function initializes a new instance of ArrayList for sourceFiles.
+	 */
+<span class="fc" id="L23">	Program() {</span>
+<span class="fc" id="L24">		sourceFiles = new ArrayList&lt;SourceFile&gt;();</span>
+<span class="fc" id="L25">	}</span>
+
+	/**
+	 * Mutator Function for SourceFile
+	 * This function accepts a SourceFile and addes it to the list of source
+	 * files for the program.
+	 * 
+	 * @param file
+	 */
+	public void addSourceFile(SourceFile file) {
+<span class="fc" id="L35">		sourceFiles.add(file);</span>
+<span class="fc" id="L36">	}</span>
+	
+	/**
+	 * This function returns the number of sources files contained in a program instance.
+	 * @return
+	 */
+	public int getNumberOfSourceFiles() {
+<span class="fc" id="L43">		return sourceFiles.size();</span>
+	}
+
+	/**
+	 * returns the SourceFile at the specified index
+	 * 
+	 * @param index of SourceFile
+	 * @return SourceFile at specified index
+	 */
+	public SourceFile getSourceFileAtIndex(int index) {
+<span class="fc" id="L53">		return sourceFiles.get(index);</span>
+	}
+	
+	/**
+	 * Determines the provided sources files are within the 
+	 * standard size of a typical CS class assignment
+	 * 
+	 * The default maximum size is 10 MB
+	 * 
+	 * @return smallEnough boolean value
+	 */
+	public boolean determineSizeOfProgram(){
+<span class="fc" id="L65">		long byteSize = 0;</span>
+<span class="fc" id="L66">		boolean smallEnough = true;</span>
+		SourceFile check;
+		
+<span class="fc bfc" id="L69" title="All 2 branches covered.">		for(int i = 0; i &lt; getNumberOfSourceFiles(); i++){</span>
+<span class="fc" id="L70">			check = getSourceFileAtIndex(i);</span>
+<span class="fc" id="L71">			byteSize += check.length();</span>
+		}
+		
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">		if(byteSize &gt; 10485760){</span>
+<span class="nc" id="L75">			smallEnough = false;</span>
+		}
+		
+<span class="fc" id="L78">		return smallEnough;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MutationTestingApp.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">MutationTestingApp.java</span></div><h1>MutationTestingApp.java</h1><pre class="source lang-java linenums">/**
+ * 
+ */
+package MutationTesting;
+
+import java.io.IOException;
+
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.commons.cli.*;
+
+/**
+ * The MutationTestingApp class serves as the overall class
+ * driving the mutation testing application.
+ *
+ */
+<span class="nc" id="L18">public class MutationTestingApp {</span>
+
+	/**
+	 * This function executes when the program is launch.
+	 * This function accepts a variety of command line arguments
+	 * to specify the operation of the application.
+	 * 
+	 * @param args
+	 * @throws IOException 
+	 */
+	
+<span class="nc" id="L29">	private static final Logger logger = Logger.getLogger(MutationTestingApp.class);</span>
+
+	@SuppressWarnings(&quot;static-access&quot;)
+	public static void main(String[] args) throws IOException {
+<span class="nc" id="L33">		BasicConfigurator.configure();</span>
+<span class="nc" id="L34">		logger.debug(&quot;instantiating MutationTest&quot;);</span>
+<span class="nc" id="L35">		MutationTest mutationTest = new MutationTest();</span>
+		
+		// Create command line options
+
+<span class="nc" id="L39">		logger.debug(&quot;creating command-line arguments&quot;);</span>
+<span class="nc" id="L40">		Options options = new Options();</span>
+<span class="nc" id="L41">		Option comparisonScript  = OptionBuilder.withArgName(&quot;file&quot;)</span>
+<span class="nc" id="L42">												.hasArg()</span>
+<span class="nc" id="L43">												.withDescription(&quot;path to comparison script file&quot;)</span>
+<span class="nc" id="L44">												.create(&quot;c&quot;);</span>
+<span class="nc" id="L45">		Option goldVersionFiles  = OptionBuilder.withArgName(&quot;file(s)&quot;)</span>
+<span class="nc" id="L46">											  	.hasArgs()</span>
+<span class="nc" id="L47">											  	.withDescription(&quot;files included in gold version&quot;)</span>
+<span class="nc" id="L48">											  	.create(&quot;g&quot;);</span>
+<span class="nc" id="L49">		Option buildFile		 = OptionBuilder.withArgName(&quot;file&quot;)</span>
+<span class="nc" id="L50">												.hasArg()</span>
+<span class="nc" id="L51">												.withDescription(&quot;build configuration file&quot;)</span>
+<span class="nc" id="L52">												.create(&quot;bf&quot;);</span>
+<span class="nc" id="L53">		Option buildCommand		 = OptionBuilder.withArgName(&quot;command&quot;)</span>
+<span class="nc" id="L54">												.hasArg()</span>
+<span class="nc" id="L55">												.withDescription(&quot;build command&quot;)</span>
+<span class="nc" id="L56">												.create(&quot;bc&quot;);</span>
+<span class="nc" id="L57">		Option mutationFiles	 = OptionBuilder.withArgName(&quot;number(s)&quot;)</span>
+<span class="nc" id="L58">												.hasArgs()</span>
+<span class="nc" id="L59">												.withDescription(&quot;argument numbers (1-n) of gold version files to be mutated&quot;)</span>
+<span class="nc" id="L60">												.create(&quot;m&quot;);</span>
+<span class="nc" id="L61">		Option preliminaryTest   = OptionBuilder.withArgName(&quot;file&quot;)</span>
+<span class="nc" id="L62">												.hasArg()</span>
+<span class="nc" id="L63">												.withDescription(&quot;preliminary test input&quot;)</span>
+<span class="nc" id="L64">												.create(&quot;p&quot;);</span>
+<span class="nc" id="L65">		Option testSuite		 = OptionBuilder.withArgName(&quot;directory&quot;)</span>
+<span class="nc" id="L66">												.hasArg()</span>
+<span class="nc" id="L67">												.withDescription(&quot;test suite directory&quot;)</span>
+<span class="nc" id="L68">												.create(&quot;t&quot;);</span>
+<span class="nc" id="L69">		options.addOption(buildFile);</span>
+<span class="nc" id="L70">		options.addOption(comparisonScript);</span>
+<span class="nc" id="L71">		options.addOption(goldVersionFiles);</span>
+<span class="nc" id="L72">		options.addOption(mutationFiles);</span>
+<span class="nc" id="L73">		options.addOption(preliminaryTest);</span>
+<span class="nc" id="L74">		options.addOption(testSuite);</span>
+<span class="nc" id="L75">		options.addOption(buildCommand);</span>
+		
+<span class="nc" id="L77">		CommandLineParser parser = new GnuParser();</span>
+		/* right now, print the arguments to the command line flags
+		 * until we have something useful to do
+		 */
+		
+<span class="nc" id="L82">		logger.debug(&quot;parsing command line arguments&quot;);</span>
+		try{
+<span class="nc" id="L84">			CommandLine line = parser.parse(options,args);</span>
+			
+<span class="nc bnc" id="L86" title="All 2 branches missed.">			if(line.hasOption(&quot;c&quot;)) {</span>
+<span class="nc" id="L87">				System.out.println(&quot;Comparison script: &quot;</span>
+<span class="nc" id="L88">						+ line.getOptionValue(&quot;c&quot;) );</span>
+			}
+			
+<span class="nc bnc" id="L91" title="All 2 branches missed.">			if(line.hasOption(&quot;bf&quot;)) {</span>
+<span class="nc" id="L92">				mutationTest.setBuildFile(line.getOptionValue(&quot;bf&quot;));</span>
+			}
+			
+<span class="nc bnc" id="L95" title="All 2 branches missed.">			if(line.hasOption(&quot;bc&quot;)) {</span>
+<span class="nc" id="L96">				mutationTest.setBuildCommand(line.getOptionValue(&quot;bc&quot;));</span>
+			}
+			
+<span class="nc bnc" id="L99" title="All 2 branches missed.">			if(line.hasOption(&quot;g&quot;)) {</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">				if(line.hasOption(&quot;m&quot;) ) {</span>
+<span class="nc" id="L101">					mutationTest.importGoldVersionFiles(line.getOptionValues(&quot;g&quot;),line.getOptionValues(&quot;m&quot;) );</span>
+				}
+				else {
+<span class="nc" id="L104">					logger.error(&quot;no gold version files selected for mutation.&quot;);</span>
+				}
+			}
+			else {
+<span class="nc" id="L108">				logger.error(&quot;no gold version files specified.&quot;);</span>
+			}
+			
+<span class="nc bnc" id="L111" title="All 2 branches missed.">			if(line.hasOption(&quot;p&quot;)){</span>
+<span class="nc" id="L112">				System.out.println(&quot;Preliminary Test: &quot; + line.getOptionValue(&quot;p&quot;));</span>
+			}
+			
+<span class="nc bnc" id="L115" title="All 2 branches missed.">			if(line.hasOption(&quot;t&quot;)) {</span>
+<span class="nc" id="L116">				mutationTest.setTestSuite(line.getOptionValue(&quot;t&quot;) );</span>
+			}
+
+		}
+<span class="nc" id="L120">		catch(ParseException e) {</span>
+<span class="nc" id="L121">			logger.error(&quot;Usage error: &quot; + e.getMessage() );</span>
+<span class="nc" id="L122">			System.exit(1);</span>
+<span class="nc" id="L123">		}</span>
+		
+<span class="nc" id="L125">		mutationTest.prepareGoldVersion();</span>
+		
+		/*
+		 * After program input, next step is to generate mutations.
+		 */
+<span class="nc" id="L130">		mutationTest.generateMutations();</span>
+		
+		/*
+		 * After mutation generation, run compilation.
+		 */
+<span class="nc" id="L135">		mutationTest.compileMutations();</span>
+		
+<span class="nc" id="L137">		logger.debug(&quot;Running Preliminary Test&quot;); //not yet implemented</span>
+		//mutationTest.runTest(); // run preliminary test
+		 
+		/*
+		 * After test suite, run comparator script.
+		 */
+		/*
+		 * Lastly, print report.
+		 */
+<span class="nc" id="L146">		mutationTest.printSummaryReportToConsole();</span>
+<span class="nc" id="L147">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

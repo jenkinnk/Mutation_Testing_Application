@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TestSuite.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">TestSuite.java</span></div><h1>TestSuite.java</h1><pre class="source lang-java linenums">package MutationTesting;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
+import org.apache.log4j.*;
+
+
+
+/** Description of TestSuite class
+ * Object model of a test suite, which consists of a folder containing
+ * any number of test files
+ * 
+ * @author jbreeden
+ *
+ */
+public class TestSuite {
+	private String pathToTestSuiteFolder;
+	private List &lt;File&gt; testFiles;
+	
+<span class="fc" id="L30">	private static final Logger logger = Logger.getLogger(TestSuite.class);</span>
+
+<span class="pc" id="L32">	List&lt;Character&gt; illegalInputs = Arrays.asList('!','@','#','$','%','^','&amp;','*','(',')','-');</span>
+
+	/**
+	 * empty constructor for TestSuite.
+	 */
+<span class="fc" id="L37">	TestSuite() {</span>
+<span class="fc" id="L38">		pathToTestSuiteFolder = &quot;&quot;;</span>
+<span class="fc" id="L39">	}</span>
+	
+	/**
+	 * default constructor for TestSuite.
+	 * 
+	 * @param pathToSuite
+	 */
+<span class="nc" id="L46">	TestSuite(String pathToSuite) {</span>
+<span class="nc" id="L47">		logger.debug(&quot;instantiating TestSuite&quot;);</span>
+<span class="nc" id="L48">		setTestSuiteFolder(pathToSuite);</span>
+<span class="nc" id="L49">	}</span>
+	
+	/**
+	 * 
+	 * @return number of test files in the test suite
+	 */
+	public int getNumberOfTests() {
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">		if(testFiles == null)</span>
+<span class="fc" id="L57">			return 0;</span>
+		else
+<span class="nc" id="L59">			return testFiles.size();</span>
+	}
+	
+	/**
+	 * getter for indexed test file
+	 * @param index index of test file desired
+	 * @return file at said index
+	 */
+	public File getTestFileAtIndex(int index) {
+<span class="fc" id="L68">		return testFiles.get(index);</span>
+	}
+	
+	/**
+	 * setter method for String pathToTestSuiteFolder. This function adds all
+	 * the files contained in the directory to the testFiles List.
+	 * 
+	 * @param pathToSuite path to the test suite directory
+	 */
+	public void setTestSuiteFolder(String pathToSuite) {
+<span class="fc" id="L78">		pathToTestSuiteFolder = pathToSuite;</span>
+<span class="fc" id="L79">		File folder = new File(pathToSuite);</span>
+<span class="fc" id="L80">		testFiles = addFilesFromFolder(folder);</span>
+<span class="fc" id="L81">	}</span>
+	
+	/**
+	 * getter method for String pathToTestSuiteFolder, which contains a path
+	 * to the test suite directory
+	 * 
+	 * @return the path to the test suite folder
+	 */
+	public String getTestSuiteFolder() {
+<span class="fc" id="L90">		return pathToTestSuiteFolder;</span>
+	}
+	
+	/**
+	 * Recursively searches the input folder and adds all contained 
+	 * files to a List, which is then returned.
+	 * 
+	 * @param folder File object containing the input directory
+	 * @return A List of File objects contained in &quot;folder&quot;
+	 */
+	public List &lt;File&gt; addFilesFromFolder(final File folder) {
+<span class="fc" id="L101">		logger.debug(&quot;adding files from folder \&quot;&quot; + folder.getName() + &quot;\&quot;&quot;);</span>
+<span class="fc" id="L102">		List&lt;File&gt; files = new ArrayList&lt;File&gt;();</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">		for(final File fileEntry : folder.listFiles()) {</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">			if(fileEntry.isDirectory()) {</span>
+<span class="fc" id="L105">				files.addAll(addFilesFromFolder(fileEntry));</span>
+			} else {
+<span class="fc" id="L107">				files.add(fileEntry);</span>
+<span class="fc" id="L108">				logger.debug(&quot;added \&quot;&quot; + folder.getName() + &quot;/&quot; + fileEntry.getName() + &quot;\&quot; to test suite&quot;);</span>
+			}
+		}
+<span class="fc" id="L111">		return files;</span>
+	}
+	
+	/**
+	 * Iterates through the list of test inputs and removes the inputs with illegal
+	 * characters from the list of legal tests
+	 * 
+	 * @param preliminary
+	 * @return edited list
+	 * @throws IOException 
+	 */
+	public List &lt;File&gt; removeIllegalTests(List &lt;File&gt; preliminary) throws IOException{
+<span class="fc" id="L123">		logger.debug(&quot;Removing illegal tests&quot;);</span>
+<span class="fc" id="L124">		List &lt;File&gt; editedList = null;</span>
+		File examine;
+		InputStream instream;
+		BufferedReader buffer;
+		String line;
+		char input;
+		char compare;
+<span class="fc" id="L131">		Boolean valid = true;</span>
+		 
+<span class="pc bnc" id="L133" title="All 2 branches missed.">		for(int i = 0; i &lt; preliminary.size(); i++){</span>
+			
+<span class="nc" id="L135">			valid = true;</span>
+<span class="nc" id="L136">			examine = preliminary.get(i);</span>
+<span class="nc" id="L137">			instream = new FileInputStream(examine.getName());</span>
+<span class="nc" id="L138">			buffer = new BufferedReader(new InputStreamReader(instream, Charset.forName(&quot;UTF-8&quot;)));</span>
+			
+<span class="nc bnc" id="L140" title="All 4 branches missed.">			while ((line = buffer.readLine()) != null &amp;&amp; valid) {</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">				for(int j = 0; j &lt; line.length(); j++){</span>
+<span class="nc" id="L142">					input = line.charAt(j);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">					for(int k = 0; k &lt; illegalInputs.size(); k++){</span>
+<span class="nc" id="L144">				    	compare = illegalInputs.get(j);</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">				    	if(input == compare){</span>
+<span class="nc" id="L146">				    		valid = false;</span>
+<span class="nc" id="L147">				    		preliminary.remove(i);</span>
+				    	}
+				    }
+				}
+			    
+			}
+			
+<span class="nc" id="L154">			buffer.close();</span>
+			
+		}
+		
+<span class="nc" id="L158">		editedList = preliminary;</span>
+		
+<span class="nc" id="L160">		return editedList;</span>
+	}
+	
+	/**
+	 * This function pares down the list of test inputs to be only the ones
+	 * with the matching baseName value specified by a string
+	 * 
+	 * @param inputList
+	 * @param baseName
+	 * @return editedList of test inputs
+	 */
+	@SuppressWarnings(&quot;null&quot;)
+	public List&lt;File&gt; specifyTestInputs(List&lt;File&gt; inputList, String baseName){
+<span class="fc" id="L173">		logger.debug(&quot;Paring down the list of inputs to matched basenames&quot;);</span>
+		
+<span class="fc" id="L175">		List&lt;File&gt; editedList = null;</span>
+		File nameExamine;
+		
+<span class="fc bfc" id="L178" title="All 2 branches covered.">		for(int i = 0; i &lt; inputList.size(); i++){</span>
+<span class="fc" id="L179">			nameExamine = inputList.get(i);</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">			if(nameExamine.getName().contentEquals(baseName)){</span>
+<span class="nc" id="L181">				editedList.add(nameExamine);</span>
+			}
+			
+		}
+		
+<span class="fc" id="L186">		return editedList;</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

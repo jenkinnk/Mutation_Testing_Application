@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MutationCompiler.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">MutationCompiler.java</span></div><h1>MutationCompiler.java</h1><pre class="source lang-java linenums">/**
+ * Mutation Compiler
+ * 
+ * This class is used to compile the mutated source code that is found
+ * in the specified directory
+ * 
+ */
+package MutationTesting;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
+
+<span class="nc" id="L19">public abstract class MutationCompiler {</span>
+	
+<span class="fc" id="L21">	static final Logger logger = Logger.getLogger(MutationCompiler.class);</span>
+	
+	/**
+	 * This function will cycle through each mutation that was generated and
+	 * attempt to compile the mutation. The mutation report is updated for
+	 * mutations that compile.
+	 * 
+	 * @param mutations
+	 * @param report
+	 * @param buildCommand
+	 */
+	public static void compileAll(ArrayList&lt;Mutation&gt; mutations, MutationReport report, String buildCommand)
+	{
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		for (int i = 0; i &lt; mutations.size(); i++) {</span>
+			try
+			{
+				
+<span class="fc" id="L38">				boolean compileStatus = compileAtPath(&quot;output/mutations/&quot; + i, buildCommand);</span>
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">				if(compileStatus)</span>
+				{
+<span class="nc" id="L41">					report.addMutant();</span>
+<span class="nc" id="L42">					System.out.println(&quot;Mutant program &quot; + i + &quot; compiled.&quot;);</span>
+				}
+				else
+				{
+<span class="fc" id="L46">					Mutation failedMutant = mutations.get(i);</span>
+<span class="fc" id="L47">					failedMutant.setFailed(true);</span>
+<span class="fc" id="L48">					System.out.println(&quot;Mutant program &quot; + i + &quot; failed to compile.&quot;);</span>
+				}
+			}
+<span class="nc" id="L51">			catch(Exception e)</span>
+			{
+<span class="nc" id="L53">				logger.error(e.getMessage());</span>
+<span class="fc" id="L54">			}</span>
+		}
+<span class="fc" id="L56">	}</span>
+	
+	/**
+	 * runs the buildCommand specified by the user at the path specified in the
+	 * String argument. This is the general purpose build function that will
+	 * make multiple compiled copies of the program on which tests can be run.
+	 * 
+	 * @param path
+	 *            filepath in which the build command should be executed.
+	 * @throws IOException 
+	 */
+	public static boolean compileAtPath(String path, String buildCommand) throws IOException {
+        try 
+        {
+<span class="fc" id="L70">            String s= null;</span>
+<span class="fc" id="L71">            String compileLog = &quot;&quot;;</span>
+<span class="fc" id="L72">            File compilePath = new File(path);</span>
+<span class="fc" id="L73">            boolean error = false;</span>
+            //change this string to your compilers location
+<span class="fc" id="L75">            Runtime runtime = Runtime.getRuntime();</span>
+<span class="fc" id="L76">            Process process = runtime.exec(buildCommand, null, compilePath);</span>
+                    
+//            BufferedReader stdError = new BufferedReader(new 
+//            		InputStreamReader(process.getErrorStream()));
+                   
+	        try {
+<span class="fc" id="L82">				process.waitFor();</span>
+<span class="nc" id="L83">			} catch (InterruptedException e) {</span>
+				// TODO Auto-generated catch block
+<span class="nc" id="L85">				e.printStackTrace();</span>
+<span class="fc" id="L86">			}</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">	        if(process.exitValue() != 0) {</span>
+<span class="fc" id="L88">	        	return false;</span>
+	        }
+
+//	        stdError.close();
+//	        System.out.println(compileLog);
+<span class="nc" id="L93">	        return true;</span>
+//	        return error;
+        }
+<span class="nc" id="L96">        catch (IOException e) {</span>
+<span class="nc" id="L97">        	logger.error(&quot;IOException: &quot; + e.getMessage());</span>
+<span class="nc" id="L98">			throw new IOException(&quot;IOException: &quot; + e.getMessage());</span>
+		}
+	}
+	
+	private static boolean isRunning(Process process) {
+	    try {
+<span class="nc" id="L104">	        process.exitValue();</span>
+<span class="nc" id="L105">	        return false;</span>
+<span class="nc" id="L106">	    } catch (Exception e) {</span>
+<span class="nc" id="L107">	        return true;</span>
+	    }
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

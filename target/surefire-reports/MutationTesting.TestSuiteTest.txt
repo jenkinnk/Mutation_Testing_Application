@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: MutationTesting.TestSuiteTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 1, Errors: 1, Skipped: 0, Time elapsed: 0.05 sec <<< FAILURE! - in MutationTesting.TestSuiteTest
+testSpecifyTestInputs(MutationTesting.TestSuiteTest)  Time elapsed: 0.002 sec  <<< FAILURE!
+java.lang.AssertionError: expected:<[src\test\resources\lucas\testsuite\f\test2.in, src\test\resources\lucas\testsuite\test1.in]> but was:<null>
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotEquals(Assert.java:743)
+	at org.junit.Assert.assertEquals(Assert.java:118)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at MutationTesting.TestSuiteTest.testSpecifyTestInputs(TestSuiteTest.java:82)
+
+testRemoveIllegalTests(MutationTesting.TestSuiteTest)  Time elapsed: 0.044 sec  <<< ERROR!
+java.io.FileNotFoundException: test2.in (The system cannot find the file specified)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:138)
+	at java.io.FileInputStream.<init>(FileInputStream.java:93)
+	at MutationTesting.TestSuite.removeIllegalTests(TestSuite.java:137)
+	at MutationTesting.TestSuiteTest.testRemoveIllegalTests(TestSuiteTest.java:68)
+

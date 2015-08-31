@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Mutation.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">Mutation.java</span></div><h1>Mutation.java</h1><pre class="source lang-java linenums">package MutationTesting;
+
+import java.io.File;
+
+/**
+ * Mutation model object
+ * 
+ * This object stores information about one individual possible mutation to a
+ * file, including the location (line, character range) of the modification to
+ * be made, the old operator and the one it is being replaced with, whether or
+ * not the mutation has failed/been killed, and which file the mutation is
+ * derived from.
+ * 
+ * @author jbreeden
+ *
+ */
+public class Mutation {
+	private boolean failed;
+	private String oldOperator;
+	private String newOperator;
+	private int line;
+	private int start;
+	private int end;
+	private File file;
+	
+	/**
+	 * empty constructor for Mutation
+	 */
+<span class="fc" id="L29">	public Mutation() {</span>
+<span class="fc" id="L30">		failed = false;</span>
+<span class="fc" id="L31">	}</span>
+	
+	/**
+	 * Default constructor for Mutation
+	 * 
+	 * @param file from which the mutation will be made
+	 * @param oldOperator the operator being changed
+	 * @param newOperator the operator it is being changed to
+	 * @param line on which the mutation exists
+	 * @param start character index on line
+	 * @param end character index on line
+	 */
+<span class="fc" id="L43">	public Mutation(File file, String oldOperator, String newOperator, int line, int start, int end) {</span>
+<span class="fc" id="L44">		this.oldOperator = oldOperator;</span>
+<span class="fc" id="L45">		this.newOperator = newOperator;</span>
+<span class="fc" id="L46">		this.line = line;</span>
+<span class="fc" id="L47">		this.start = start;</span>
+<span class="fc" id="L48">		this.end = end;</span>
+<span class="fc" id="L49">		this.failed = false;</span>
+<span class="fc" id="L50">		this.file = file;</span>
+<span class="fc" id="L51">	}</span>
+	
+	/**
+	 * @return whether or not this mutation has been killed
+	 */
+	public boolean isFailed() {
+<span class="fc" id="L57">		return failed;</span>
+	}
+	/**
+	 * @param failed whether or not this mutation has been killed
+	 */
+	public void setFailed(boolean failed) {
+<span class="fc" id="L63">		this.failed = failed;</span>
+<span class="fc" id="L64">	}</span>
+	
+	/**
+	 * getter for oldOperator
+	 * 
+	 * @return the oldOperator
+	 */
+	public String getOldValue() {
+<span class="fc" id="L72">		return oldOperator;</span>
+	}
+	/**
+	 * setter for oldOperator
+	 * 
+	 * @param oldOperator the oldOperator to set
+	 */
+	public void setOldValue(String oldOperator) {
+<span class="fc" id="L80">		this.oldOperator = oldOperator;</span>
+<span class="fc" id="L81">	}</span>
+	
+	/**
+	 * getter for newOperator
+	 * 
+	 * @return the newOperator
+	 */
+	public String getNewOperator() {
+<span class="fc" id="L89">		return newOperator;</span>
+	}
+	/**
+	 * setter for newOperator
+	 * 
+	 * @param newOperator the newOperator to set
+	 */
+	public void setNewOperator(String newOperator) {
+<span class="fc" id="L97">		this.newOperator = newOperator;</span>
+<span class="fc" id="L98">	}</span>
+	/**
+	 * getter for line
+	 * 
+	 * @return the line
+	 */
+	public int getLine() {
+<span class="fc" id="L105">		return line;</span>
+	}
+	/**
+	 * setter for line
+	 * 
+	 * @param line the line to set
+	 */
+	public void setLine(int line) {
+<span class="fc" id="L113">		this.line = line;</span>
+<span class="fc" id="L114">	}</span>
+	
+	/**
+	 * getter for start
+	 * 
+	 * @return the start
+	 */
+	public int getStart() {
+<span class="fc" id="L122">		return start;</span>
+	}
+	/**
+	 * setter for start
+	 * 
+	 * @param start the start to set
+	 */
+	public void setStart(int start) {
+<span class="fc" id="L130">		this.start = start;</span>
+<span class="fc" id="L131">	}</span>
+	
+	/**
+	 * getter for end
+	 * 
+	 * @return the end
+	 */
+	public int getEnd() {
+<span class="fc" id="L139">		return end;</span>
+	}
+	/**
+	 * setter for end
+	 * 
+	 * @param end the end to set
+	 */
+	public void setEnd(int end) {
+<span class="fc" id="L147">		this.end = end;</span>
+<span class="fc" id="L148">	}</span>
+	
+	
+	/**
+	 * reports a string describing the mutation that this object describes
+	 * 
+	 * @return string describing the mutation
+	 */
+	public String report() {
+<span class="fc bfc" id="L157" title="All 2 branches covered.">		return  oldOperator</span>
+				+ &quot; to &quot; + newOperator
+				+ &quot; on line &quot; + (line+1)
+				+ &quot;, char &quot; + start
+				+ (start != end ? (&quot; to &quot; + end) : &quot;&quot;);
+	}
+
+	/**
+	 * getter for file
+	 * 
+	 * @return the sourceFile
+	 */
+	public File getFile() {
+<span class="fc" id="L170">		return file;</span>
+	}
+
+	/**
+	 * setter for file
+	 * 
+	 * @param sourceFile the sourceFile to set
+	 */
+	public void setFile(File file) {
+<span class="fc" id="L179">		this.file = file;</span>
+<span class="fc" id="L180">	}</span>
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>

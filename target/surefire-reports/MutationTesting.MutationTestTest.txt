@@ -1,0 +1,38 @@
+-------------------------------------------------------------------------------
+Test set: MutationTesting.MutationTestTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 12.088 sec <<< FAILURE! - in MutationTesting.MutationTestTest
+testBuildVersionAtPath(MutationTesting.MutationTestTest)  Time elapsed: 0.109 sec  <<< FAILURE!
+java.lang.AssertionError: Compilation failed.
+	at org.junit.Assert.fail(Assert.java:88)
+	at MutationTesting.MutationTestTest.testBuildVersionAtPath(MutationTestTest.java:74)
+
+listMutationsByOperator(MutationTesting.MutationTestTest)  Time elapsed: 0.007 sec  <<< FAILURE!
+org.junit.ComparisonFailure: expected:<...ator: 
+Operator +: 
+[+ to * on line 6, char 3 to 5 in file path]
+> but was:<...ator: 
+Operator +: 
+[Operator -: 
+Operator *: 
++ to * on line 6, char 3 to 5 in file path
+Operator /: 
+Operator ==: 
+Operator !=: 
+Operator <=: 
+Operator >=: 
+Operator <: 
+Operator >: ]
+>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at MutationTesting.MutationTestTest.listMutationsByOperator(MutationTestTest.java:122)
+
+testImportGoldVersionFiles(MutationTesting.MutationTestTest)  Time elapsed: 0.005 sec  <<< FAILURE!
+java.lang.AssertionError: expected: MutationTesting.SourceFile<src\test\resources\lucas\lucas.cpp> but was: java.io.File<src\test\resources\lucas\lucas.cpp>
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotEquals(Assert.java:743)
+	at org.junit.Assert.assertEquals(Assert.java:118)
+	at org.junit.Assert.assertEquals(Assert.java:144)
+	at MutationTesting.MutationTestTest.testImportGoldVersionFiles(MutationTestTest.java:40)
+

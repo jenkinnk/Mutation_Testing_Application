@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>MutationTest.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MutationTesting</a> &gt; <a href="index.source.html" class="el_package">MutationTesting</a> &gt; <span class="el_source">MutationTest.java</span></div><h1>MutationTest.java</h1><pre class="source lang-java linenums">package MutationTesting;
+
+import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.apache.log4j.*;
+
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+
+/**
+ * Mutation Test Model Object
+ * 
+ * &lt;p&gt;
+ * Contains methods and variables for running a mutation test on source code.
+ * 
+ * @author jbreeden
+ *
+ */
+public class MutationTest {
+
+<span class="fc" id="L29">	private static final Logger logger = Logger.getLogger(MutationTest.class);</span>
+
+	private TestSuite testSuite;
+	private Program goldVersion;
+	private MutationReport report;
+	private File buildFile;
+	private String buildCommand;
+	private String dataDirectory;
+	private ArrayList&lt;Mutation&gt; mutationList;
+
+	/**
+	 * @return the dataDirectory
+	 */
+	public String getDataDirectory() {
+<span class="nc" id="L43">		return dataDirectory;</span>
+	}
+
+	/**
+	 * @param dataDirectory
+	 *            the dataDirectory to set
+	 */
+	public void setDataDirectory(String dataDirectory) {
+<span class="nc" id="L51">		this.dataDirectory = dataDirectory;</span>
+<span class="nc" id="L52">	}</span>
+
+	/**
+	 * MutationTest Constructor
+	 * 
+	 * Establishes new instances for variables goldVersion and report.
+	 */
+<span class="fc" id="L59">	public MutationTest() {</span>
+//		BasicConfigurator.configure();
+<span class="fc" id="L61">		goldVersion = new Program();</span>
+<span class="fc" id="L62">		report = new MutationReport();</span>
+<span class="fc" id="L63">		testSuite = new TestSuite();</span>
+<span class="fc" id="L64">		dataDirectory = &quot;output&quot;;</span>
+<span class="fc" id="L65">		mutationList = new ArrayList&lt;Mutation&gt;();</span>
+<span class="fc" id="L66">	}</span>
+
+	/**
+	 * @return the buildCommand
+	 */
+	public String getBuildCommand() {
+<span class="nc" id="L72">		return buildCommand;</span>
+	}
+
+	/**
+	 * @param buildCommand
+	 *            the buildCommand to set
+	 */
+	public void setBuildCommand(String buildCommand) {
+<span class="fc" id="L80">		this.buildCommand = buildCommand;</span>
+<span class="fc" id="L81">	}</span>
+
+	/**
+	 * Setter function for goldVersion.
+	 * 
+	 * This function accepts a Program as a parameter and stores it into
+	 * goldVersion
+	 * 
+	 * @param theGoldVersion
+	 */
+	public void setGoldVersion(Program theGoldVersion) {
+<span class="nc" id="L92">		goldVersion = theGoldVersion;</span>
+<span class="nc" id="L93">	}</span>
+
+	/**
+	 * Getter function for goldVersion.
+	 * 
+	 * @return goldVersion the gold version program.
+	 */
+	public Program getGoldVersion() {
+<span class="fc" id="L101">		return goldVersion;</span>
+	}
+
+	/**
+	 * Copy Gold Version to temp directory and Build
+	 * 
+	 * Make the temp directory if necessary, copy the gold version into it, then
+	 * build it according to the buildCommand and buildFile.
+	 */
+	public void prepareGoldVersion() {
+<span class="nc" id="L111">		String goldVersionPath = dataDirectory + File.separator + &quot;gold-version&quot;;</span>
+<span class="nc" id="L112">		File goldDirectory = new File(goldVersionPath);</span>
+<span class="nc" id="L113">		goldDirectory.mkdirs();</span>
+<span class="nc" id="L114">		copyVersionToDirectoryAtPath(goldVersionPath, goldVersion);</span>
+		try{
+<span class="nc" id="L116">			buildVersionAtPath(goldVersionPath);</span>
+		}
+<span class="nc" id="L118">		catch(IOException e)</span>
+		{
+<span class="nc" id="L120">			logger.error(e.getMessage());</span>
+<span class="nc" id="L121">		}</span>
+<span class="nc" id="L122">	}</span>
+
+	/**
+	 * Setter function for buildFile
+	 * 
+	 * This function accepts a String as a parameter and initializes buildFile
+	 * using the path specified in the string.
+	 * 
+	 * @param pathToBuildFile
+	 */
+	public void setBuildFile(String pathToBuildFile) {
+<span class="fc" id="L133">		buildFile = new File(pathToBuildFile);</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">		if (!buildFile.exists())</span>
+<span class="nc" id="L135">			logger.warn(&quot;Build file \&quot;&quot; + buildFile.getName()</span>
+					+ &quot;\&quot; does not exist.&quot;);
+<span class="fc" id="L137">	}</span>
+
+	/**
+	 * This function imports specified goldVersion files and correctly
+	 * identifies the files that have been selected for mutation.
+	 * 
+	 * @param listOfFiles
+	 * @param fileArrayIndicesToMutate
+	 */
+	public void importGoldVersionFiles(String listOfFiles[],
+			String fileArrayIndicesToMutate[]) {
+<span class="fc" id="L148">		logger.debug(&quot;importing gold version files&quot;);</span>
+<span class="fc" id="L149">		int numberOfFiles = listOfFiles.length;</span>
+<span class="fc" id="L150">		List&lt;String&gt; mutateList = Arrays.asList(fileArrayIndicesToMutate);</span>
+
+<span class="fc bfc" id="L152" title="All 2 branches covered.">		for (int i = 0; i &lt; numberOfFiles; i++) {</span>
+<span class="fc" id="L153">			SourceFile file = new SourceFile(listOfFiles[i]);</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">			if (file.exists()) {</span>
+<span class="pc bpc" id="L155" title="1 of 2 branches missed.">				if (mutateList.contains(Integer.toString(i + 1)))</span>
+<span class="fc" id="L156">					file.setShouldBeMutated(true);</span>
+<span class="fc" id="L157">				this.goldVersion.addSourceFile(file);</span>
+<span class="fc" id="L158">				System.out.println(&quot;Imported &quot; + listOfFiles[i]</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">						+ (file.getShouldBeMutated() ? &quot; - MUTATE&quot; : &quot;&quot;));</span>
+			} else {
+<span class="nc" id="L161">				System.out.println(&quot;Unable to locate file: &quot; + listOfFiles[i]);</span>
+			}
+		}
+<span class="fc" id="L164">	}</span>
+
+	public void copyVersionToDirectoryAtPath(String path, Program version) {
+<span class="fc" id="L167">		File directory = new File(path);</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">		if (!directory.isDirectory()) {</span>
+<span class="nc" id="L169">			logger.warn(&quot;invalid temporary directory for version copy&quot;);</span>
+<span class="nc" id="L170">			return;</span>
+		}
+
+		try {
+<span class="fc" id="L174">			FileUtils.copyFileToDirectory(buildFile, directory);</span>
+<span class="nc" id="L175">		} catch (IOException e) {</span>
+<span class="nc" id="L176">			logger.warn(&quot;IOException while trying to copy file: &quot;</span>
+<span class="nc" id="L177">					+ e.getMessage());</span>
+<span class="fc" id="L178">		}</span>
+		try {
+<span class="fc bfc" id="L180" title="All 2 branches covered.">			for (int i = 0; i &lt; version.getNumberOfSourceFiles(); i++) {</span>
+<span class="fc" id="L181">				FileUtils.copyFileToDirectory(version.getSourceFileAtIndex(i),</span>
+						directory);
+			}
+<span class="nc" id="L184">		} catch (IOException e) {</span>
+<span class="nc" id="L185">			logger.fatal(&quot;unable to copy source file to temp directory :&quot;</span>
+<span class="nc" id="L186">					+ e.getMessage());</span>
+<span class="fc" id="L187">		}</span>
+<span class="fc" id="L188">	}</span>
+
+	/**
+	 * runs the buildCommand specified by the user at the path specified in the
+	 * String argument. This is the general purpose build function that will
+	 * make multiple compiled copies of the program on which tests can be run.
+	 * 
+	 * @param path
+	 *            filepath in which the build command should be executed.
+	 * @throws IOException 
+	 */
+	public void buildVersionAtPath(String path) throws IOException {
+<span class="fc" id="L200">		File compilePath = new File(path);</span>
+<span class="fc" id="L201">		Runtime runtime = Runtime.getRuntime();</span>
+		try {
+			String line;
+<span class="nc" id="L204">			Process process = runtime.exec(buildCommand, null, compilePath);</span>
+<span class="nc" id="L205">			BufferedReader in = new BufferedReader(new InputStreamReader(</span>
+<span class="nc" id="L206">					process.getInputStream()));</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">			while ((line = in.readLine()) != null) {</span>
+<span class="nc" id="L208">				logger.debug(line);</span>
+			}
+<span class="nc" id="L210">			in.close();</span>
+
+<span class="fc" id="L212">		} catch (IOException e) {</span>
+<span class="fc" id="L213">			logger.warn(&quot;unable to compile: &quot; + e.getMessage());</span>
+<span class="fc" id="L214">			throw new IOException(&quot;Compilation failed.&quot;);</span>
+<span class="nc" id="L215">		}</span>
+<span class="nc" id="L216">	}</span>
+
+	/**
+	 * This function generates mutations from the goldVersion program.
+	 */
+	public void generateMutations() {
+		// generate the Mutation objects for each SourceFile
+<span class="fc" id="L223">		logger.debug(&quot;generating Mutation objects for &quot; + goldVersion.getNumberOfSourceFiles() + &quot; possible input files&quot;);</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">		for(int i=0;i&lt;goldVersion.getNumberOfSourceFiles();i++) {</span>
+<span class="fc" id="L225">			SourceFile file = goldVersion.getSourceFileAtIndex(i);</span>
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">			if(file.getShouldBeMutated()) {</span>
+<span class="fc" id="L227">					ArrayList&lt;Mutation&gt; mutationsFromFile = Mutator.listMutationsInFile(file);</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">					if(mutationsFromFile.size() != 0) {</span>
+<span class="fc" id="L229">						logger.debug(&quot;attempting to add &quot; + mutationsFromFile.size()  + &quot; mutations for file &quot; + file.getName());</span>
+<span class="fc" id="L230">						getMutationList().addAll(mutationsFromFile);</span>
+<span class="fc" id="L231">						logger.debug(&quot;mutationList now has &quot; +getMutationList().size() + &quot; mutations&quot;);</span>
+					} else
+					{
+<span class="fc" id="L234">						logger.debug(&quot;file &quot; + file.getName() + &quot; contains no mutations&quot;);</span>
+					}
+			}
+		}
+		
+<span class="fc" id="L239">		logger.debug(&quot;creating mutation directory&quot;);</span>
+<span class="fc" id="L240">		File directory = new File(dataDirectory+File.separator+&quot;mutations&quot;);</span>
+<span class="fc" id="L241">		directory.mkdirs();</span>
+		
+		// create unique directories and files for each mutation
+<span class="fc" id="L244">		logger.debug(&quot;saving all mutations to disk&quot;);</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">		for(int i=0;i&lt;getMutationList().size();i++) {</span>
+<span class="fc" id="L246">			File currentDir = new File(directory.getAbsolutePath()+File.separator+i);</span>
+<span class="fc" id="L247">			currentDir.mkdir();</span>
+			
+<span class="fc" id="L249">			Mutator.saveMutatedFileToDirectory(getMutationList().get(i),currentDir);</span>
+			
+			/*
+			 *  copy all of the files which are not being mutated in this
+			 *  current mutation into the mutation's directory
+			 */
+<span class="fc bfc" id="L255" title="All 2 branches covered.">			for(int j=0;j&lt;goldVersion.getNumberOfSourceFiles();j++) {</span>
+<span class="fc" id="L256">				File gvFile = goldVersion.getSourceFileAtIndex(j);</span>
+<span class="fc bfc" id="L257" title="All 2 branches covered.">				if(!gvFile.equals(mutationList.get(i).getFile() ) ) {</span>
+
+					try {
+<span class="fc" id="L260">						FileUtils.copyFileToDirectory(gvFile, currentDir);</span>
+<span class="nc" id="L261">					} catch (IOException e) {</span>
+						// TODO Auto-generated catch block
+<span class="nc" id="L263">						e.printStackTrace();</span>
+<span class="fc" id="L264">					}</span>
+				}
+			}
+			
+			// copy build file to mutation's directory
+			try {
+<span class="fc" id="L270">				FileUtils.copyFileToDirectory(buildFile, currentDir);</span>
+<span class="nc" id="L271">			} catch (IOException e) {</span>
+				// TODO Auto-generated catch block
+<span class="nc" id="L273">				e.printStackTrace();</span>
+<span class="fc" id="L274">			}</span>
+		}
+<span class="fc" id="L276">	}</span>
+	/**
+	 * Create list of all mutations by operator
+	 * @return
+	 */
+	public String listMutationsByOperator(){
+<span class="fc" id="L282">		StringBuilder list = new StringBuilder();</span>
+<span class="fc" id="L283">		list.append(&quot;List of all mutations by operator: &quot; + &quot;\n&quot;);</span>
+<span class="fc" id="L284">		list.append(&quot;Operator +: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++) {</span>
+<span class="pc bpc" id="L286" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;+&quot;))</span>
+		    {
+<span class="nc" id="L288">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L289">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L292">		list.append(&quot;Operator -: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L293" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L294" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;-&quot;))</span>
+		    {
+<span class="nc" id="L296">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L297">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L300">		list.append(&quot;Operator *: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L301" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L302" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;*&quot;))</span>
+		    {
+<span class="fc" id="L304">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="fc" id="L305">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L308">		list.append(&quot;Operator /: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L309" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L310" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;/&quot;))</span>
+		    {
+<span class="nc" id="L312">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L313">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L316">		list.append(&quot;Operator ==: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L317" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L318" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;==&quot;))</span>
+		    {
+<span class="nc" id="L320">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L321">						getMutationList().get(i).getFile() + &quot;\n&quot;); 	</span>
+		    }
+		}
+<span class="fc" id="L324">		list.append(&quot;Operator !=: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L325" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L326" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;!=&quot;))</span>
+		    {
+<span class="nc" id="L328">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L329">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L332">		list.append(&quot;Operator &lt;=: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L333" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L334" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;&lt;=&quot;))</span>
+		    {
+<span class="nc" id="L336">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L337">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L340">		list.append(&quot;Operator &gt;=: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L341" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L342" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;&gt;=&quot;))</span>
+		    {
+<span class="nc" id="L344">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L345">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L348">		list.append(&quot;Operator &lt;: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L349" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L350" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;&lt;&quot;))</span>
+		    {
+<span class="nc" id="L352">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L353">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L356">		list.append(&quot;Operator &gt;: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++){</span>
+<span class="pc bpc" id="L358" title="1 of 2 branches missed.">		    if(getMutationList().get(i).getNewOperator().equals(&quot;&gt;&quot;))</span>
+		    {
+<span class="nc" id="L360">				list.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="nc" id="L361">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+<span class="fc" id="L364">		return list.toString();</span>
+	}
+
+	/**
+	 * Create list of remaining live mutations to console
+	 * @return
+	 */
+	public String listOfRemainingLiveMutations(){
+<span class="fc" id="L372">		StringBuilder live = new StringBuilder();</span>
+<span class="fc" id="L373">		live.append(&quot;List of remaining live mutations: &quot; + &quot;\n&quot;);</span>
+<span class="fc bfc" id="L374" title="All 2 branches covered.">		for (int i = 0; i &lt; getMutationList().size(); i++) {</span>
+<span class="pc bpc" id="L375" title="1 of 2 branches missed.">		    if(!getMutationList().get(i).isFailed())</span>
+		    {
+<span class="fc" id="L377">		    	live.append(getMutationList().get(i).report() + &quot; in file &quot; + </span>
+<span class="fc" id="L378">						getMutationList().get(i).getFile() + &quot;\n&quot;);</span>
+		    }
+		}
+		
+<span class="fc" id="L382">		return live.toString();</span>
+	}
+	
+	/**
+	 * Print list of all mutations by operator to console
+	 */
+	public void printListOfMutationsToConsole() {
+<span class="nc" id="L389">		System.out.print(listMutationsByOperator());</span>
+<span class="nc" id="L390">	}</span>
+	
+	/**
+	 * Print list of remaining live mutations to console
+	 */
+	public void printRemainingLiveMutations() {
+<span class="nc" id="L396">		System.out.print(listOfRemainingLiveMutations());</span>
+<span class="nc" id="L397">	}</span>
+	
+	/**
+	 * This function attempts to compile all of the generated mutations.
+	 */
+	public void compileMutations() {
+<span class="fc" id="L403">		MutationCompiler.compileAll(mutationList, report, buildCommand);</span>
+<span class="fc" id="L404">	}</span>
+
+	/**
+	 * This function retrieves the Summary Report and prints it to the console.
+	 */
+	public void printSummaryReportToConsole() {
+<span class="nc" id="L410">		report.printToSummaryReportConsole();</span>
+<span class="nc" id="L411">	}</span>
+
+	public void setTestSuite(String path) {
+<span class="nc" id="L414">		testSuite.setTestSuiteFolder(path);</span>
+<span class="nc" id="L415">	}</span>
+
+	
+	/**
+	 * This function accepts a mutate source file and prints the file to the screen.
+	 * @param File
+	 * @throws IOException 
+	 */
+	public void viewSourceFile(File mutatedSourceFile) throws IOException {
+<span class="fc" id="L424">        BufferedReader br = null;</span>
+		 
+		try 
+		{
+			String sCurrentLine;
+<span class="fc" id="L429">			br = new BufferedReader(new FileReader(mutatedSourceFile));</span>
+<span class="fc bfc" id="L430" title="All 2 branches covered.">			while ((sCurrentLine = br.readLine()) != null) {</span>
+<span class="fc" id="L431">				System.out.println(sCurrentLine);</span>
+			}
+		} 
+<span class="nc" id="L434">		catch (IOException e) </span>
+		{
+<span class="nc" id="L436">			e.printStackTrace();</span>
+<span class="nc" id="L437">			logger.error(e.getMessage());</span>
+		} 
+		finally 
+		{
+<span class="nc" id="L441">			try </span>
+			{
+<span class="pc bpc" id="L443" title="5 of 6 branches missed.">				if (br != null)br.close();</span>
+			} 
+<span class="nc" id="L445">			catch (IOException ex) </span>
+			{
+<span class="nc" id="L447">				ex.printStackTrace();</span>
+<span class="nc" id="L448">				logger.error(ex.getMessage());</span>
+<span class="pc" id="L449">			}</span>
+<span class="nc" id="L450">		}</span>
+<span class="fc" id="L451">	}</span>
+
+	public ArrayList&lt;Mutation&gt; getMutationList() {
+<span class="fc" id="L454">		return mutationList;</span>
+	}
+
+	public void setMutationList(ArrayList&lt;Mutation&gt; mutationList) {
+<span class="fc" id="L458">		this.mutationList = mutationList;</span>
+<span class="fc" id="L459">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.1.201405082137</span></div></body></html>
